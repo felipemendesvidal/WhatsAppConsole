@@ -16,21 +16,30 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 using System.Linq;
+using System.Text;
 namespace whatsConsole
 {
-    public class Agenda
+    public class Agenda : IAgenda
     {
-//atributos
+
+        //atributo
         public string Nome{get; set;}
-        public int Telefone{get; set;}
-    
+        public string Telefone {get; set;}
+        //atributo com uma lista como valor, assim posso chamar essa lista depois
+        public List<Contato> Contatos {get; set;}
         //caminho do diretorio
         private const string PAHT_DIRETORIO = "C:\\Users\\Phellipe\\Desktop\\senai\\c#\\whatsConsole\\Database"; //teste
         //local onde o aquivo vai ser criado
         private const string PAHT_ARQUIVO ="Database/Agenda.csv";
 
 //construtor
+        /// <summary>
+        /// Cria arquivos e o dietorio
+        /// </summary>
         public Agenda(){
+            //separar o caminho entre pasta e o arquivo que será criado
+            //string barra = PAHT_ARQUIVO.Split('/')[0];
+
             //verificação se o diretorio existe, caso não exista será criado
             if(!Directory.Exists(PAHT_DIRETORIO)){
                 Directory.CreateDirectory(PAHT_DIRETORIO);
@@ -43,19 +52,31 @@ namespace whatsConsole
             }//fim do if paht_arquivo
 
         }//fim do construtor
-        public Agenda(string c_nome, int c_telefone){
+        public Agenda(string c_nome, string c_telefone){
             this.Nome = c_nome;
             this.Telefone = c_telefone;
         }//fim construtor
 
-//Metodo Criar Linha
-        /// <summary>
-            /// Cria as separações dos dados no arquivo csv, escolha: , ou ; para fazer a separação e registrar no arquivo certinho, esse metodo é interno.
-         /// </summary>
-         /// <returns>devolve a string já formatada, com todos os dados</returns>
-         private string CriarLinha(Agenda separador){
-             return $"{separador.Nome};{separador.Telefone}";
-         }//fim do metodo criarLinha
+//Metodo inserir Linha
+    /// <summary>
+    /// Insere os dados nas linhas do csv
+    /// </summary>
+    /// <param name="c_contato">dado posicionador</param>
+     public void Inserir(Agenda c_contato){
+         var linha_arquivo = new string [] {c_contato.PrepararLinhaNoCsv(c_contato) };
+         File.AppendAllLines(PAHT_ARQUIVO, linha_arquivo);
+     }//fim metodo inserir
+
+//prepara linha csv
+    
+    private string PrepararLinhaNoCsv(Agenda p_csv){
+        return $"Nome: {p_csv.Nome};Telefone: {p_csv.Telefone}";
+    }//fim metodo preparar linha
+   
+
+//excluir 
+      
+
 
 
 

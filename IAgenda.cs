@@ -2,8 +2,8 @@ namespace whatsConsole
 {
     public interface IAgenda
     {
-         void Cadastrar ();
-         void Excluir ();
-         void Lista ();
+        //  void Cadastrar (Contato c_contato);
+        //  void Excluir (Contato c_contato);
+        //  void Lista ();
     }
 }
