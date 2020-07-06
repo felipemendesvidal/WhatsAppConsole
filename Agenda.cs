@@ -48,16 +48,6 @@ namespace whatsConsole
             }//fim do if paht_arquivo
         }//fim do construtor
 
-//Metodo(cadastrar) inserir Linha
-    /// <summary>
-    /// Insere os dados nas linhas do csv (cadastrar)
-    /// </summary>
-    /// <param name="c_contato">dado posicionador</param>
-     public void Inserir(Contato c_contato){
-         var linha_arquivo = new string [] {c_contato.PrepararLinhaNoCsv(c_contato) };
-         File.AppendAllLines(PAHT_ARQUIVO, linha_arquivo);
-     }//fim metodo inserir
-
 //prepara linha csv
     /// <summary>
     /// cria os arquivos separados e editados no arquivo
@@ -68,6 +58,16 @@ namespace whatsConsole
         return $"Nome: {p_csv.Nome};Telefone: {p_csv.Telefone}";
     }//fim metodo preparar linha
 
+//Metodo(cadastrar) inserir Linha
+    /// <summary>
+    /// Insere os dados nas linhas do csv (cadastrar)
+    /// </summary>
+    /// <param name="c_contato">dado posicionador</param>
+     public void Inserir(Contato c_contato){
+         var linha_arquivo = new string [] {PrepararLinhaNoCsv(c_contato) };
+         File.AppendAllLines(PAHT_ARQUIVO, linha_arquivo);
+     }//fim metodo inserir
+
 //Ler arquivo csv
     /// <summary>
     /// Le os arquivos cvg e coloca ele na lista de contatos
@@ -76,7 +76,7 @@ namespace whatsConsole
     public List<Contato> Ler() {
         //Anotações para reuso aula 28
         //trasformar as linhas encontradas em um array de strings
-        strings[] linhas_csv = File.ReadAllLines(PAHT_ARQUIVO); //ler todas as linhas do arquivo
+        string[] linhas_csv = File.ReadAllLines(PAHT_ARQUIVO); //ler todas as linhas do arquivo
         //analise do arquivo
         foreach(var varrer_linhas in linhas_csv){
             //quebramos ou separamos as linhas com o ;
@@ -92,7 +92,7 @@ namespace whatsConsole
         List<string> linhasArquivo = new List<string>();
         using(StreamReader arquivoAnalisado = new StreamReader(PAHT_ARQUIVO) ){
             string linhasLida;
-            while( ( linhasLida = arquivoAnalisado.readLine() ) != null ){
+            while( ( linhasLida = arquivoAnalisado.ReadLine() ) != null ){
                 linhasArquivo.Add(linhasLida);
             }//fim while
         }//fim using

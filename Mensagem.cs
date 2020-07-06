@@ -1,3 +1,8 @@
+using System.Collections.Generic;
+using System.IO;
+using System;
+using System.Linq;
+using System.Text;
 namespace whatsConsole
 {
     public class Mensagem
@@ -12,10 +17,7 @@ namespace whatsConsole
         /// </summary>
         /// <param name="c_contato">contato</param>
         public void Enviar(Contato c_contato){
-            Console.WriteLine($"Enviar msg parar {c_contato.Nome}?");
-            Texto_msg = Console.ReadLine();
-
-            System.Console.WriteLine($"Mensagem: {Texto_msg} enviada: {c_contato.Nome}."); 
+            Console.WriteLine($"Mensagem: {Texto_msg} enviada: {Destinatario.Nome}."); 
         }
     }
 }
