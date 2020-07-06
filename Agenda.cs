@@ -22,15 +22,11 @@ namespace whatsConsole
     public class Agenda : IAgenda
     {
 
-        //atributo
-        public string Nome{get; set;}
-        public string Telefone {get; set;}
-        //atributo com uma lista como valor, assim posso chamar essa lista depois
-        //public List<Contato> Contatos {get; set;} //atribuido embaixo
-        //caminho do diretorio
-        private const string PAHT_DIRETORIO = "C:\\Users\\Phellipe\\Desktop\\senai\\c#\\whatsConsole\\Database"; //teste
+        private const string PAHT_DIRETORIO = "C:\\Users\\Phellipe\\Desktop\\senai\\c#\\whatsConsole\\Database"; //caminho do diretorio
         //local onde o aquivo vai ser criado
-        private const string PAHT_ARQUIVO ="Database/Agenda.csv";
+        private const string PAHT_ARQUIVO ="Database/Agenda.csv";//caminho arquivo
+        //lista de contatos
+        List<Contato> contatos = new List<Contato>();
 
 //construtor
         /// <summary>
@@ -50,19 +46,14 @@ namespace whatsConsole
             if(!File.Exists(PAHT_ARQUIVO)){
                 File.Create(PAHT_ARQUIVO).Close();
             }//fim do if paht_arquivo
-
         }//fim do construtor
-        public Agenda(string c_nome, string c_telefone){
-            this.Nome = c_nome;
-            this.Telefone = c_telefone;
-        }//fim construtor
 
 //Metodo(cadastrar) inserir Linha
     /// <summary>
     /// Insere os dados nas linhas do csv (cadastrar)
     /// </summary>
     /// <param name="c_contato">dado posicionador</param>
-     public void Inserir(Agenda c_contato){
+     public void Inserir(Contato c_contato){
          var linha_arquivo = new string [] {c_contato.PrepararLinhaNoCsv(c_contato) };
          File.AppendAllLines(PAHT_ARQUIVO, linha_arquivo);
      }//fim metodo inserir
@@ -73,47 +64,40 @@ namespace whatsConsole
     /// </summary>
     /// <param name="p_csv"></param>
     /// <returns></returns>
-    private string PrepararLinhaNoCsv(Agenda p_csv){
+    private string PrepararLinhaNoCsv(Contato p_csv){
         return $"Nome: {p_csv.Nome};Telefone: {p_csv.Telefone}";
     }//fim metodo preparar linha
-   
 
 //Ler arquivo csv
     /// <summary>
-    /// Le e remove as linhas do arquivo csv
+    /// Le os arquivos cvg e coloca ele na lista de contatos
     /// </summary>
-    /// <param name="listaLinhas">lista com as linhas do arquivo</param>
-    /// <param name="filtro">filtro para apagar as linhas</param>
-    public void Ler_e_Remover_ArqeuivosCsv(List<string> listaLinhas, string filtro){
-        //Anotações para reuso
+    /// <returns> retorna a lista de contatos</returns>
+    public List<Contato> Ler() {
+        //Anotações para reuso aula 28
         //trasformar as linhas encontradas em um array de strings
-        //strings[] linhas_csv =File.ReadAllLines(PAHT_ARQUIVO); //ler todas as linhas do arquivo
+        strings[] linhas_csv = File.ReadAllLines(PAHT_ARQUIVO); //ler todas as linhas do arquivo
         //analise do arquivo
-        //foreach(var varrer_linhas in linhas_csv){
+        foreach(var varrer_linhas in linhas_csv){
             //quebramos ou separamos as linhas com o ;
-            //string[] dadosEncontrados = varrer_linhas.Split(";");
-            //tratando os dados encontrados e adicionando eles em um novo objeto
-            // Agenda dadosTratados = new Agenda();
-        // Implementar caso precise, nos testes ainda não é necessario por ser poucos dados
-            using(StreamReader arquivocsv = new StreamReader(PAHT_ARQUIVO)){
-                string linha_lida;
-                while((linha_lida = arquivocsv.ReadLine() ) != null){
-                    listaLinhas.Add(linha_lida);
-                }//fim while
-                //remove
-                listaLinhas.RemoveAll( z => z.Contains(filtro));
-            }//fim using
+            string[] dadosEncontrados = varrer_linhas.Split(";");
+            //tratando os dados encontrados e adicionando eles na lista criada
+            contatos.Add(new Contato(dadosEncontrados[0], dadosEncontrados[1]) );
+        }//fim foreach
+        return contatos;//retornando a lista tratada pelo foreach
     }//fim do metodo ler arquivos
 
 //metodos remover
-    public void ApagarLinhacsv(List<string> ListaLerLinhas) {
-        //pesquisar melhor
-        using(StreamReader remover = new StreamReader(PAHT_ARQUIVO) ){
-            //leitura das linhas
-            foreach(string varrer_linha in ListaLerLinhas){
-                remover.Write(varrer_linhas + "\n");
-            }//fim foreach
+    public void Excluir(Contato e_contato) {
+        List<string> linhasArquivo = new List<string>();
+        using(StreamReader arquivoAnalisado = new StreamReader(PAHT_ARQUIVO) ){
+            string linhasLida;
+            while( ( linhasLida = arquivoAnalisado.readLine() ) != null ){
+                linhasArquivo.Add(linhasLida);
+            }//fim while
         }//fim using
+        linhasArquivo.RemoveAll( x => x.Contains(e_contato.Nome) );
+        //criar metodo: Reescrevercsv(linhasArquivo);
     }//fim do metodo remover linhas  
 
 //metodo que vai ser usado para separar dados encontrados
@@ -125,41 +109,6 @@ namespace whatsConsole
     public string SepararDados(string dadoSeparado){
         return dadoSeparado.Split("-")[1];
     }//fim separar dados
-
-//listar contatos igual o exemplo professor
-    /// <summary>
-    /// lista os contatos e organiza eles em uma lista tratada
-    /// </summary>
-    /// <returns>objeto novo com a lista tratada</returns>
-    public List<Contato> ListarContatos (){
-        //lista de contatos
-        List<Contato> contatos = new List <Contato>();
-
-        //aula 28 ver anotações professor
-        //tranformando cada linha em um array de strings
-        string[] linhas_encontradas = File.ReadAllLines(PAHT_ARQUIVO);//Vai ler todas as linhas do arquivo
-        //analisando os arquivos
-        foreach(var varrer_linhas in linhas_encontradas){
-
-            //separando as linhas com ;
-            strings[] dados_encontrados = varrer_linhas.Split(";");
-
-            //criando um objeto para tratar dados
-            Contato tratar_dados = new Cotato();
-            tratar_dados.Nome = SepararDados(dados_encontrados[1]);
-            tratar_dados.Telefone = SepararDados(dados_encontrados[1]);
-
-            //adicionando objto na lista
-            contatos.Add(tratar_dados);
-        }//fim foreach
-        contatos =contatos.OrderBy(y => y.Nome).ToList();//pesquisar lambida
-        return contatos;
-    }//fim metodo listar contatos
-      
-
-
-
-
 
 
 

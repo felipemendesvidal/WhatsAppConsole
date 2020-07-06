@@ -4,13 +4,13 @@ namespace whatsConsole
     {
         //atributos
         public string Nome{get; set;}
-        public int Telefone{get; set;}
+        public string Telefone{get; set;}
 
         //coonstrutor
         public Contato(){
 
         }//fim construtor
-        public Contato(string c_nome, int c_telefone){
+        public Contato(string c_nome, string c_telefone){
             this.Nome = c_nome;
             this.Telefone = c_telefone;
         }//fim construtor
